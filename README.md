@@ -2,7 +2,7 @@
 
 > Note: `v1.0.0` is still in progress! Not ready for primetime yet :tv:
 
-![test runner results](#TODO)
+[![Build Status](https://travis-ci.org/bengreenier/webrtc-signal-http.svg?branch=master)](https://travis-ci.org/bengreenier/webrtc-signal-http)
 
 opinionated webrtc signal provider using `http` as a protocol :spider_web: :signal_strength:
 
