@@ -1,11 +1,14 @@
 {
   "name": "webrtc-signal-http",
   "version": "1.0.0",
-  "description": "webrtc signal implementation, using http",
+  "description": "opinionated webrtc signal provider using http as a protocol",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
     "test": "test"
+  },
+  "bin": {
+    "webrtc-signal-http": "./index.js"
   },
   "scripts": {
     "start": "node index.js",

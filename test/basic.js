@@ -2,6 +2,7 @@ const assert = require('assert')
 const request = require('supertest')
 const appCreator = require('../lib')
 const PeerList = require('../lib/peer-list')
+const Peer = require('../lib/peer')
 
 describe('webrtc-signal-http', () => {
     describe('http', () => {
@@ -50,6 +51,7 @@ describe('webrtc-signal-http', () => {
                 .expect(200, '')
                 .then(() => {
                     return test.get(`/wait?peer_id=${receiverPeerId}`)
+                        .expect('Pragma', `${senderPeerId}`)
                         .expect(200, 'testMessage')
                         .then(() => { /* on success, empty the chainable promise result */ })
                 }).then(done, done)
@@ -67,6 +69,7 @@ describe('webrtc-signal-http', () => {
             Promise.all([
                 // start making the wait call
                 test.get(`/wait?peer_id=${receiverPeerId}`)
+                    .expect('Pragma', `${senderPeerId}`)
                     .expect(200, 'testMessage')
                     .then(() => { /* on success, empty the chainable promise result */ }),
 
@@ -75,6 +78,73 @@ describe('webrtc-signal-http', () => {
                     return test.post(`/message?peer_id=${senderPeerId}&to=${receiverPeerId}`)
                         .set('Content-Type', 'text/plain')
                         .send('testMessage')
+                        .expect(200)
+                        .then(() => { /* on success, empty the chainable promise result */ })
+                })
+            ]).then(() => { /* on success, empty the chainable promise result */ }).then(done, done)
+        })
+
+        it('should support /sign_out', (done) => {
+            const app = appCreator(false)
+
+             // simulate adding two peers
+             const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
+             const secondPeerId = app.get('peerList').addPeer('secondPeer', {})
+ 
+             const test = request(app)
+
+            test
+                .get(`/sign_out?peer_id=${firstPeerId}`)
+                .expect(200)
+                .then(() => {
+                    assert.deepEqual(app.get('peerList').getPeerIds(), [secondPeerId])
+                })
+                .then(done, done)
+        })
+
+        it('should support sign_in notifications', (done) => {
+            const app = appCreator(false)
+
+            // simulate adding two peers
+            const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
+            
+            const test = request(app)
+            
+            Promise.all([
+                // start making the wait call
+                test.get(`/wait?peer_id=${firstPeerId}`)
+                    .expect('Pragma', `${firstPeerId}`)
+                    .expect(200, 'secondPeer,2,1\nfirstPeer,1,1')
+                    .then(() => { /* on success, empty the chainable promise result */ }),
+
+                // start waiting 500ms, then start making the sign_in call
+                new Promise((resolve, reject) => { setTimeout(resolve, 500) }).then(() => {
+                    return test.get(`/sign_in?peer_name=secondPeer`)
+                        .expect(200)
+                        .then(() => { /* on success, empty the chainable promise result */ })
+                })
+            ]).then(() => { /* on success, empty the chainable promise result */ }).then(done, done)
+        })
+
+        it('should support sign_out notifications', (done) => {
+            const app = appCreator(false)
+
+            // simulate adding two peers
+            const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
+            const secondPeerId = app.get('peerList').addPeer('secondPeer', {})
+            
+            const test = request(app)
+            
+            Promise.all([
+                // start making the wait call
+                test.get(`/wait?peer_id=${firstPeerId}`)
+                    .expect('Pragma', `${firstPeerId}`)
+                    .expect(200, 'firstPeer,1,1')
+                    .then(() => { /* on success, empty the chainable promise result */ }),
+
+                // start waiting 500ms, then start making the sign_out call
+                new Promise((resolve, reject) => { setTimeout(resolve, 500) }).then(() => {
+                    return test.get(`/sign_out?peer_id=${secondPeerId}`)
                         .expect(200)
                         .then(() => { /* on success, empty the chainable promise result */ })
                 })
@@ -151,6 +221,50 @@ describe('webrtc-signal-http', () => {
             instance.addPeer('test2', {obj: true})
 
             assert.equal(instance.format(), 'test2,2,0\ntest,1,0')
+        })
+    })
+
+    describe('Peer', () => {
+        it('should have (mostly) immutable properties', () => {
+            const expectedName = "testName"
+            const expectedId = 1
+            const instance = new Peer(expectedName, expectedId)
+
+            assert.equal(instance.name, expectedName)
+            assert.equal(instance.id, expectedId)
+
+            assert.throws(() => {
+                instance.name = "newName"
+            })
+            assert.throws(() => {
+                instance.id = 50
+            })
+            assert.throws(() => {
+                instance.buffer = []
+            })
+            assert.doesNotThrow(() => {
+                instance.res = {}
+            })
+        })
+
+        it('should have status logic', () => {
+            const instance = new Peer(null, null)
+
+            assert.ok(instance.status() === false)
+
+            instance.res = {
+                socket: null
+            }
+
+            assert.ok(instance.status() === false)
+
+            instance.res = {
+                socket: {
+                    writable: true
+                }
+            }
+
+            assert.ok(instance.status() === true)
         })
     })
 })
