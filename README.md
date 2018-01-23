@@ -6,11 +6,7 @@
 
 opinionated webrtc signal provider using `http` as a protocol :spider_web: :signal_strength:
 
-<center>
-
 ![logo gif](./readme_example.gif)
-
-</center>
 
 We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/) signaling server that communicated over regular old `HTTP/1.1` for [3dtoolkit](https://github.com/catalystcode/3dtoolkit) - this is it. It's designed to mirror [the WebRTC example server](https://github.com/svn2github/webrtc/tree/master/talk/examples/peerconnection/server) at an API level, while allowing developers to consume and extend the base functionality.
 
@@ -44,7 +40,7 @@ For example extensions, see the following:
 
 #### app.get('peerList')
 
-[Object] - can be used to retrieve a `PeerList` from the express `app`. __Returns__ a [PeerList](#PeerList) object.
+[Object] - can be used to retrieve a `PeerList` from the express `app`. __Returns__ a [PeerList](#peerlist) object.
 
 ### PeerList
 
@@ -60,7 +56,7 @@ For example extensions, see the following:
 
 #### getPeer
 
-[Function] - takes `id` (a Number). Retrieves the representation of the peer from signaling. __Returns__ a [Peer](#Peer) object.
+[Function] - takes `id` (a Number). Retrieves the representation of the peer from signaling. __Returns__ a [Peer](#peer) object.
 
 #### setPeerSocket
 
@@ -72,7 +68,7 @@ For example extensions, see the following:
 
 #### popPeerData
 
-[Function] - takes `id` (a Number). Retrives arbitrary data from the stack for the particular peer. __Returns__ a [PeerData](#PeerData) object.
+[Function] - takes `id` (a Number). Retrives arbitrary data from the stack for the particular peer. __Returns__ a [PeerData](#peerdata) object.
 
 #### format
 
