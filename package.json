@@ -1,0 +1,29 @@
+{
+  "name": "webrtc-signal-http",
+  "version": "1.0.0",
+  "description": "webrtc signal implementation, using http",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "keywords": [
+    "webrtc",
+    "signal"
+  ],
+  "author": "Ben Greenier",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-bunyan-logger": "^1.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.0",
+    "supertest": "^3.0.0"
+  }
+}
