@@ -1,5 +1,9 @@
 #!/usr/bin/env node
-const signalAppCreator = require('./lib')
+const express = require('express')
+const signalRouterCreator = require('./lib')
 
-signalAppCreator(process.env.WEBRTC_SIGNAL_LOGGING || true)
-    .listen(process.env.PORT || 3000)
+const app = express()
+
+app.use(signalRouterCreator({
+    enableLogging: process.env.WEBRTC_SIGNAL_LOGGING || true
+})).listen(process.env.PORT || 3000)

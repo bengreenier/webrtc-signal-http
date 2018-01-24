@@ -4,7 +4,7 @@ info:
     \n
     ![logo
     gif](https://github.com/bengreenier/webrtc-signal-http/raw/master/readme_example.gif)
-    \n
+    \n\n
     We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/)
     signaling server that communicated over regular old `HTTP/1.1` for
     [3dtoolkit](https://github.com/catalystcode/3dtoolkit) - this is it. It's

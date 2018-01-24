@@ -138,11 +138,11 @@ For example extensions, see the following:
 
 > This is the exported behavior, you access it with `require('webrtc-signal-http)`
 
-[Function] - takes `boolean` indicating if the bunyan logger should be enabled. __Returns__ an [express](https://expressjs.com) `app` object.
+[Function] - takes a [SignalOpts](#signalopts) indicating if the bunyan logger should be enabled. __Returns__ an [express](https://expressjs.com) `router` object.
 
-#### app.get('peerList')
+#### router.peerList
 
-[Object] - can be used to retrieve a `PeerList` from the express `app`. __Returns__ a [PeerList](#peerlist) object.
+[Object] - can be used to retrieve a `PeerList` from the express `router`. __Returns__ a [PeerList](#peerlist) object.
 
 ### PeerList
 
@@ -215,6 +215,18 @@ For example extensions, see the following:
 #### status
 
 [Function] - takes nothing. Determines if the peer's `res` is able to be written to. __Returns__ a `bool`.
+
+### SignalOpts
+
+[Object] - represents the options that can be given to the signal creator
+
+#### enableLogging
+
+[Bool] - enables logging (default `true`)
+
+#### peerList
+
+[PeerList](#peerlist) - uses a given peerList implementation instead of creating one
 
 ## License
 

@@ -1,10 +1,35 @@
 const assert = require('assert')
 const request = require('supertest')
-const appCreator = require('../lib')
+const express = require('express')
+const signalRouter = require('../lib')
 const PeerList = require('../lib/peer-list')
 const Peer = require('../lib/peer')
 
+const appCreator = (enableLogging) => {
+    const router = signalRouter({
+        enableLogging: enableLogging
+    })
+    const app = express()
+
+    app.use(router)
+
+    // for testing, we also further expose peerList
+    app.peerList = router.peerList
+
+    return app
+}
+
 describe('webrtc-signal-http', () => {
+    describe('creator', () => {
+        it('should validate peerList', () => {
+            assert.throws(() => {
+                signalRouter({
+                    peerList: {}
+                })
+            }, /peerList/)
+        })
+    })
+
     describe('http', () => {
         it('should support sign_in', (done) => {
             const expectedPeerName = 'myName'
@@ -40,8 +65,8 @@ describe('webrtc-signal-http', () => {
         it('should support /message posting (buffered)', (done) => {
             const app = appCreator(false)
 
-            const senderPeerId = app.get('peerList').addPeer('sendPeer', {})
-            const receiverPeerId = app.get('peerList').addPeer('receivePeer', {})
+            const senderPeerId = app.peerList.addPeer('sendPeer', {})
+            const receiverPeerId = app.peerList.addPeer('receivePeer', {})
 
             const test = request(app)
             
@@ -61,8 +86,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false)
 
             // simulate adding two peers
-            const senderPeerId = app.get('peerList').addPeer('sendPeer', {})
-            const receiverPeerId = app.get('peerList').addPeer('receivePeer', {})
+            const senderPeerId = app.peerList.addPeer('sendPeer', {})
+            const receiverPeerId = app.peerList.addPeer('receivePeer', {})
 
             const test = request(app)
             
@@ -88,8 +113,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false)
 
              // simulate adding two peers
-             const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
-             const secondPeerId = app.get('peerList').addPeer('secondPeer', {})
+             const firstPeerId = app.peerList.addPeer('firstPeer', {})
+             const secondPeerId = app.peerList.addPeer('secondPeer', {})
  
              const test = request(app)
 
@@ -97,7 +122,7 @@ describe('webrtc-signal-http', () => {
                 .get(`/sign_out?peer_id=${firstPeerId}`)
                 .expect(200)
                 .then(() => {
-                    assert.deepEqual(app.get('peerList').getPeerIds(), [secondPeerId])
+                    assert.deepEqual(app.peerList.getPeerIds(), [secondPeerId])
                 })
                 .then(done, done)
         })
@@ -106,7 +131,7 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false)
 
             // simulate adding two peers
-            const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
+            const firstPeerId = app.peerList.addPeer('firstPeer', {})
             
             const test = request(app)
             
@@ -130,8 +155,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false)
 
             // simulate adding two peers
-            const firstPeerId = app.get('peerList').addPeer('firstPeer', {})
-            const secondPeerId = app.get('peerList').addPeer('secondPeer', {})
+            const firstPeerId = app.peerList.addPeer('firstPeer', {})
+            const secondPeerId = app.peerList.addPeer('secondPeer', {})
             
             const test = request(app)
             
