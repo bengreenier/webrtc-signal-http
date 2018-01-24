@@ -19,11 +19,15 @@ To install the server cli `npm install -g webrtc-signal-http`. To run it, just u
 To consume this server as a basis but add some extended functionality, `npm install webrtc-signal-http` and then run some code like the following:
 
 ```
-const signalAppCreator = require('webrtc-signal-http')
-const useBunyanLogger = true
+const express = require('express')
+const signalRouterCreator = require('webrtc-signal-http')
 
-const app = signalAppCreator(useBunyanLogger)
+const app = express()
+const router = signalRouterCreator({
+    enableLogging: true
+})
 
+app.use(router)
 app.get('/new-endpoint', (req, res) => { res.send('hello') })
 
 app.listen(process.env.PORT || 3000)
