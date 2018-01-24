@@ -12,7 +12,7 @@ We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/) signalin
 
 ## Getting started
 
-> Learn about the [RESTful API](#restful-api) via the OpenAPI doc ([raw](./swagger.yml) or [hosted](https://rebilly.github.io/ReDoc/?url=https://github.com/bengreenier/webrtc-signal-http/blob/master/swagger.yml)) to understand how clients should interact with the service.
+> Learn about the [RESTful API](#restful-api) via the OpenAPI doc ([raw](./swagger.yml) or [hosted](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/bengreenier/webrtc-signal-http/master/swagger.yml)) to understand how clients should interact with the service.
 
 To install the server cli `npm install -g webrtc-signal-http`. To run it, just use `webrtc-signal-http` from the command line, using the `PORT` environment variable to configure it's listening port.
 
