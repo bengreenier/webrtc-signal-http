@@ -1,18 +1,17 @@
 swagger: '2.0'
 info:
-  description: >-
-    opinionated webrtc signal provider using `http` as a protocol
-
+  description: "opinionated webrtc signal provider using `http` as a protocol
+    \n
     ![logo
     gif](https://github.com/bengreenier/webrtc-signal-http/raw/master/readme_example.gif)
-
+    \n
     We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/)
     signaling server that communicated over regular old `HTTP/1.1` for
     [3dtoolkit](https://github.com/catalystcode/3dtoolkit) - this is it. It's
     designed to mirror [the WebRTC example
     server](https://github.com/svn2github/webrtc/tree/master/talk/examples/peerconnection/server)
     at an API level, while allowing developers to consume and extend the base
-    functionality.
+    functionality."
   version: 1.0.0
   title: webrtc-signal-http
   license:
