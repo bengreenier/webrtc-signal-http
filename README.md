@@ -168,6 +168,10 @@ For example extensions, see the following:
 
 [Function] - takes nothing. Retrieves all the peer id's in the PeerList. __Returns__ an [Array] of id's (Numbers).
 
+#### nextId
+
+[Function] - takes nothing. Returns the next valid peer id that can be handed out (but does not hand it out). __Returns__ a Number.
+
 #### setPeerSocket
 
 [Function] - takes `id` (a Number), and `res` (a http.Response object). Updates a representation of the peer with a new response object for signaling. __Returns__ nothing.

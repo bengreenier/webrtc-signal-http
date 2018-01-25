@@ -32,10 +32,20 @@ describe('webrtc-signal-http', () => {
 
     describe('http', () => {
         it('should support sign_in', (done) => {
+
+            request(appCreator(false))
+                .get(`/sign_in`)
+                .expect('Content-Type', /text\/plain/)
+                .expect('Pragma', '1')
+                .expect(200, `peer_1,1,1`, done)
+        })
+
+        it('should support sign_in (w/ peer_name)', (done) => {
             const expectedPeerName = 'myName'
 
             request(appCreator(false))
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
+                .set('Accept', 'application/vnd.webrtc-signal.2')
                 .expect('Content-Type', /text\/plain/)
                 .expect('Pragma', '1')
                 .expect(200, `${expectedPeerName},1,1`, done)
@@ -49,10 +59,10 @@ describe('webrtc-signal-http', () => {
                 .expect('Connection', 'close')
                 .expect('Server', signalRouter.version)
                 .expect('Access-Control-Allow-Credentials', 'true')
-                .expect('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Connection, Cache-Control')
+                .expect('Access-Control-Allow-Headers', 'Accept, Content-Type, Content-Length, Connection, Cache-Control')
                 .expect('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
                 .expect('Access-Control-Allow-Origin', '*')
-                .expect('Access-Control-Expose-Headers', 'Content-Length')
+                .expect('Access-Control-Expose-Headers', 'Accept, Content-Length')
                 .expect('Cache-Control', 'no-cache')
                 .expect(200, done)
         })
@@ -65,11 +75,13 @@ describe('webrtc-signal-http', () => {
 
             test
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
+                .set('Accept', 'application/vnd.webrtc-signal.2')
                 .expect('Content-Type', /text\/plain/)
                 .expect(200, `${expectedPeerName},1,1`)
                 .then(() => {
                     return test
                         .get(`/sign_in?peer_name=${expectedPeerName2}`)
+                        .set('Accept', 'application/vnd.webrtc-signal.2')
                         .expect('Content-Type', /text\/plain/)
                         // the order here is significant, recent clients should be listed first
                         // expectedPeerName has a status 0, because supertest doesn't keep TCP open
@@ -163,6 +175,7 @@ describe('webrtc-signal-http', () => {
                 // start waiting 500ms, then start making the sign_in call
                 new Promise((resolve, reject) => { setTimeout(resolve, 500) }).then(() => {
                     return test.get(`/sign_in?peer_name=secondPeer`)
+                        .set('Accept', 'application/vnd.webrtc-signal.2')
                         .expect(200)
                         .then(() => { /* on success, empty the chainable promise result */ })
                 })
