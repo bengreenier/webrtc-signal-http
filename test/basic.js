@@ -37,7 +37,24 @@ describe('webrtc-signal-http', () => {
             request(appCreator(false))
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
                 .expect('Content-Type', /text\/plain/)
+                .expect('Pragma', '1')
                 .expect(200, `${expectedPeerName},1,1`, done)
+        })
+
+        it('should set specific headers', (done) => {
+            const expectedPeerName = 'myName'
+
+            request(appCreator(false))
+                .get(`/sign_in?peer_name=${expectedPeerName}`)
+                .expect('Connection', 'close')
+                .expect('Server', signalRouter.version)
+                .expect('Access-Control-Allow-Credentials', 'true')
+                .expect('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Connection, Cache-Control')
+                .expect('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+                .expect('Access-Control-Allow-Origin', '*')
+                .expect('Access-Control-Expose-Headers', 'Content-Length')
+                .expect('Cache-Control', 'no-cache')
+                .expect(200, done)
         })
 
         it('should support multiple sign_in', (done) => {
@@ -95,13 +112,14 @@ describe('webrtc-signal-http', () => {
                 // start making the wait call
                 test.get(`/wait?peer_id=${receiverPeerId}`)
                     .expect('Pragma', `${senderPeerId}`)
+                    .expect('Content-Type', 'application/vnd.unit.test+text; charset=utf-8')
                     .expect(200, 'testMessage')
                     .then(() => { /* on success, empty the chainable promise result */ }),
 
                 // start waiting 500ms, then start making the message call
                 new Promise((resolve, reject) => { setTimeout(resolve, 500) }).then(() => {
                     return test.post(`/message?peer_id=${senderPeerId}&to=${receiverPeerId}`)
-                        .set('Content-Type', 'text/plain')
+                        .set('Content-Type', 'application/vnd.unit.test+text; charset=utf-8')
                         .send('testMessage')
                         .expect(200)
                         .then(() => { /* on success, empty the chainable promise result */ })
@@ -224,15 +242,16 @@ describe('webrtc-signal-http', () => {
         it('should support push/pop peerData', () => {
             const expectedData = {value: 1}
             const expectedDataSrcId = 2
+            const expectedMime = 'mime'
             const instance = new PeerList()
 
             const id = instance.addPeer('test', {})
 
             assert.equal(instance.popPeerData(id), null)
 
-            instance.pushPeerData(expectedDataSrcId, id, expectedData)
+            instance.pushPeerData(expectedDataSrcId, id, expectedData, expectedMime)
 
-            assert.deepEqual(instance.popPeerData(id), {srcId: expectedDataSrcId, data: expectedData})
+            assert.deepEqual(instance.popPeerData(id), {srcId: expectedDataSrcId, data: expectedData, dataMime: expectedMime})
             assert.equal(instance.popPeerData(id), null)
         })
 

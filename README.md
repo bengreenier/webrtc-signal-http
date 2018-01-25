@@ -98,7 +98,7 @@ Content-Length: 0
 
 > Takes `peer_id` query parameter
 
-Provides a mechanism for simulated server push, using vanilla http long polling. That is, the TCP socket behind this request will remain open to the server until there is content the server needs to send. In the event of a TCP timeout the client should reconnect. Messages that contain a `Pragma` value that matches the client `peer_id` are peer status updates and should be handled the same as the status update provided in the `GET /sign_in` response. `Content-Type` headers will not reflect the type of the original content.
+Provides a mechanism for simulated server push, using vanilla http long polling. That is, the TCP socket behind this request will remain open to the server until there is content the server needs to send. In the event of a TCP timeout the client should reconnect. Messages that contain a `Pragma` value that matches the client `peer_id` are peer status updates and should be handled the same as the status update provided in the `GET /sign_in` response.
 
 Peer status update:
 
@@ -110,7 +110,7 @@ Host: localhost:3000
 
 HTTP/1.1 200 OK
 Pragma: 2
-Content-Type: text/html; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Length: 18
 
 test2,3,1
@@ -127,7 +127,7 @@ Host: localhost:3000
 
 HTTP/1.1 200 OK
 Pragma: 3
-Content-Type: text/html; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Length: 12
 
 test content
@@ -174,7 +174,7 @@ For example extensions, see the following:
 
 #### pushPeerData
 
-[Function] - takes `srcId` (a Number), `destId` (a Number), `data` (an Object). Pushs arbitrary data onto a stack for a particular destination peer. __Returns__ nothing.
+[Function] - takes `srcId` (a Number), `destId` (a Number), `data` (an Object), `dataMime` (a String). Pushs arbitrary data of a given MIME type onto a stack for a particular destination peer. __Returns__ nothing.
 
 #### popPeerData
 
