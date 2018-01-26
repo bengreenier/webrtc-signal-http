@@ -35,103 +35,17 @@ app.listen(process.env.PORT || 3000)
 
 ## RESTful API
 
+> The default API version is `1` and will be used if no version is specified. 
+
+The RESTful API is verioned, with different versions supporting different capabilities. To select a version, use the `Accept` header with a value of `'application/vnd.webrtc-signal.<Number>[+<type>]` where `<Number>` is the api version, and `[]` indicates an optional component, `<type>` where type is a valid application mime type. For example, `text` or `json`. API version `1` has complete API compatibility with the WebRTC example server. API version `2` makes some logical improvements, as documented [here](https://github.com/bengreenier/webrtc-signal-http/issues/3).
+
+You can view the following OpenAPI specifications for each API version:
+
++ v1 ([raw](https://github.com/bengreenier/webrtc-signal-http/blob/master/swagger-v1.yml) or [hosted](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/bengreenier/webrtc-signal-http/master/swagger-v1.yml))
++ v2 ([raw](https://github.com/bengreenier/webrtc-signal-http/blob/master/swagger-v2.yml) or [hosted](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/bengreenier/webrtc-signal-http/master/swagger-v2.yml))
+
 For example clients, see the following:
-+ [webrtc-native-peerconnection](https://github.com/svn2github/webrtc/tree/master/talk/examples/peerconnection/client)
-
-### GET /sign_in
-
-> Takes `peer_name` query parameter
-
-Indicates a peer is available to peer with. The response will contain the unique peer_id assigned to the caller in the `Pragma` header, and a `csv` formatted list of peers in the `body`.
-
-```
-GET http://localhost:3000/sign_in?peer_name=test HTTP/1.1
-Host: localhost:3000
-
-=>
-
-HTTP/1.1 200 OK
-Pragma: 1
-Content-Type: text/plain; charset=utf-8
-Content-Length: 8
-
-test,1,1
-```
-
-### GET /sign_out
-
-> Takes `peer_id` query parameter
-
-Indicates a peer is no longer available to peer with. It is expected this method be called when a peer is no longer intending to use signaling. The response will be empty.
-
-```
-GET http://localhost:3000/sign_out?peer_id=1 HTTP/1.1
-Host: localhost:3000
-
-=>
-
-HTTP/1.1 200 OK
-Content-Length: 0
-```
-
-### POST /message
-
-> Takes `peer_id` (indicating the caller id) and `to` (indicating whom we're sending to)
-
-Provides a messaging mechanism for one peer to send data to another. There are no requirements around the type of data that can be sent. The message may be buffered until the receiving peer connects to the service. The response will be empty.
-
-```
-POST http://localhost:3000/message?peer_id=2&to=3 HTTP/1.1
-Host: localhost:3000
-Content-Type: text/plain
-Content-Length: 12
-
-test content
-
-=>
-
-HTTP/1.1 200 OK
-Content-Length: 0
-```
-
-### GET /wait
-
-> Takes `peer_id` query parameter
-
-Provides a mechanism for simulated server push, using vanilla http long polling. That is, the TCP socket behind this request will remain open to the server until there is content the server needs to send. In the event of a TCP timeout the client should reconnect. Messages that contain a `Pragma` value that matches the client `peer_id` are peer status updates and should be handled the same as the status update provided in the `GET /sign_in` response. `Content-Type` headers will not reflect the type of the original content.
-
-Peer status update:
-
-```
-GET http://localhost:3000/wait?peer_id=2 HTTP/1.1
-Host: localhost:3000
-
-=>
-
-HTTP/1.1 200 OK
-Pragma: 2
-Content-Type: text/html; charset=utf-8
-Content-Length: 18
-
-test2,3,1
-test,2,0
-```
-
-Peer message:
-
-```
-GET http://localhost:3000/wait?peer_id=2 HTTP/1.1
-Host: localhost:3000
-
-=>
-
-HTTP/1.1 200 OK
-Pragma: 3
-Content-Type: text/html; charset=utf-8
-Content-Length: 12
-
-test content
-```
++ [webrtc-native-peerconnection](https://github.com/svn2github/webrtc/tree/master/talk/examples/peerconnection/client) (targets API v1)
 
 ## Extension API
 
@@ -144,7 +58,19 @@ For example extensions, see the following:
 
 [Function] - takes a [SignalOpts](#signalopts) indicating if the bunyan logger should be enabled. __Returns__ an [express](https://expressjs.com) `router` object.
 
-#### router.peerList
+#### PeerList
+
+exposes the constructor for [PeerList](#peerlist) off the module root.
+
+#### version
+
+exposes the latest `Server` version, as will be set in the `Server` header.
+
+#### latestApiVersion
+
+exposes the latest api version that can be used via the `Accept` header. 
+
+### router.peerList
 
 [Object] - can be used to retrieve a `PeerList` from the express `router`. __Returns__ a [PeerList](#peerlist) object.
 
@@ -168,13 +94,17 @@ For example extensions, see the following:
 
 [Function] - takes nothing. Retrieves all the peer id's in the PeerList. __Returns__ an [Array] of id's (Numbers).
 
+#### nextId
+
+[Function] - takes nothing. Returns the next valid peer id that can be handed out (but does not hand it out). __Returns__ a Number.
+
 #### setPeerSocket
 
 [Function] - takes `id` (a Number), and `res` (a http.Response object). Updates a representation of the peer with a new response object for signaling. __Returns__ nothing.
 
 #### pushPeerData
 
-[Function] - takes `srcId` (a Number), `destId` (a Number), `data` (an Object). Pushs arbitrary data onto a stack for a particular destination peer. __Returns__ nothing.
+[Function] - takes `srcId` (a Number), `destId` (a Number), `data` (an Object), `dataMime` (a String). Pushs arbitrary data of a given MIME type onto a stack for a particular destination peer. __Returns__ nothing.
 
 #### popPeerData
 
