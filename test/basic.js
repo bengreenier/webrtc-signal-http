@@ -37,7 +37,7 @@ describe('webrtc-signal-http', () => {
             request(appCreator(false))
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
                 .expect('Content-Type', /text\/plain/)
-                .expect(200, `${expectedPeerName},1,1`, done)
+                .expect(200, `${expectedPeerName},1,1\n`, done)
         })
 
         it('should support multiple sign_in', (done) => {
@@ -49,14 +49,14 @@ describe('webrtc-signal-http', () => {
             test
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
                 .expect('Content-Type', /text\/plain/)
-                .expect(200, `${expectedPeerName},1,1`)
+                .expect(200, `${expectedPeerName},1,1\n`)
                 .then(() => {
                     return test
                         .get(`/sign_in?peer_name=${expectedPeerName2}`)
                         .expect('Content-Type', /text\/plain/)
                         // the order here is significant, recent clients should be listed first
                         // expectedPeerName has a status 0, because supertest doesn't keep TCP open
-                        .expect(200, `${expectedPeerName2},2,1\n${expectedPeerName},1,0`)
+                        .expect(200, `${expectedPeerName2},2,1\n${expectedPeerName},1,0\n`)
                         .then(() => { /* on success, empty the chainable promise result */ })
                 })
                 .then(done, done)
@@ -139,7 +139,7 @@ describe('webrtc-signal-http', () => {
                 // start making the wait call
                 test.get(`/wait?peer_id=${firstPeerId}`)
                     .expect('Pragma', `${firstPeerId}`)
-                    .expect(200, 'secondPeer,2,1\nfirstPeer,1,1')
+                    .expect(200, 'secondPeer,2,1\nfirstPeer,1,1\n')
                     .then(() => { /* on success, empty the chainable promise result */ }),
 
                 // start waiting 500ms, then start making the sign_in call
@@ -164,7 +164,7 @@ describe('webrtc-signal-http', () => {
                 // start making the wait call
                 test.get(`/wait?peer_id=${firstPeerId}`)
                     .expect('Pragma', `${firstPeerId}`)
-                    .expect(200, 'firstPeer,1,1')
+                    .expect(200, 'firstPeer,1,1\n')
                     .then(() => { /* on success, empty the chainable promise result */ }),
 
                 // start waiting 500ms, then start making the sign_out call
@@ -241,11 +241,11 @@ describe('webrtc-signal-http', () => {
 
             instance.addPeer('test', {obj: true})
 
-            assert.equal(instance.format(), 'test,1,0')
+            assert.equal(instance.format(), 'test,1,0\n')
 
             instance.addPeer('test2', {obj: true})
 
-            assert.equal(instance.format(), 'test2,2,0\ntest,1,0')
+            assert.equal(instance.format(), 'test2,2,0\ntest,1,0\n')
         })
     })
 
