@@ -228,6 +228,10 @@ For example extensions, see the following:
 
 [Bool] - enables logging (default `true`)
 
+#### enableCors
+
+[Bool] - enables Cross Origin Resource Sharing (default `true`)
+
 #### peerList
 
 [PeerList](#peerlist) - uses a given peerList implementation instead of creating one
