@@ -5,9 +5,10 @@ const signalRouter = require('../lib')
 const PeerList = require('../lib/peer-list')
 const Peer = require('../lib/peer')
 
-const appCreator = (enableLogging) => {
+const appCreator = (enableLogging, enableCors) => {
     const router = signalRouter({
-        enableLogging: enableLogging
+        enableLogging: enableLogging,
+        enableCors: enableCors
     })
     const app = express()
 
@@ -34,17 +35,41 @@ describe('webrtc-signal-http', () => {
         it('should support sign_in', (done) => {
             const expectedPeerName = 'myName'
 
-            request(appCreator(false))
+            request(appCreator(false, false))
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
                 .expect('Content-Type', /text\/plain/)
                 .expect(200, `${expectedPeerName},1,1\n`, done)
+        })
+
+        it('should support CORS requests if enabled', (done) => {
+            const expectedPeerName = 'myName'
+
+            request(appCreator(false, true))
+            .get("/")
+            .expect("access-control-allow-origin", "*", done)
+        })
+
+        it('should prevent CORS requests if disabled', (done) => {
+            const expectedPeerName = 'myName'
+
+            request(appCreator(false, false))
+            .get("/")
+            .end(function (error, response) {
+                if (error) {
+                    return done(error)
+                }
+
+                var corsDisabled = response.header["access-control-allow-origin"] == undefined;
+                assert.equal(corsDisabled, true)
+                done()
+            })
         })
 
         it('should support multiple sign_in', (done) => {
             const expectedPeerName = 'myName'
             const expectedPeerName2 = 'myOtherName'
 
-            const test = request(appCreator(false))
+            const test = request(appCreator(false, false))
 
             test
                 .get(`/sign_in?peer_name=${expectedPeerName}`)
@@ -63,7 +88,7 @@ describe('webrtc-signal-http', () => {
         })
 
         it('should support /message posting (buffered)', (done) => {
-            const app = appCreator(false)
+            const app = appCreator(false, false)
 
             const senderPeerId = app.peerList.addPeer('sendPeer', {})
             const receiverPeerId = app.peerList.addPeer('receivePeer', {})
@@ -83,7 +108,7 @@ describe('webrtc-signal-http', () => {
         })
 
         it('should support /message posting (un-buffered)', (done) => {
-            const app = appCreator(false)
+            const app = appCreator(false, false)
 
             // simulate adding two peers
             const senderPeerId = app.peerList.addPeer('sendPeer', {})
@@ -110,7 +135,7 @@ describe('webrtc-signal-http', () => {
         })
 
         it('should support /sign_out', (done) => {
-            const app = appCreator(false)
+            const app = appCreator(false, false)
 
              // simulate adding two peers
              const firstPeerId = app.peerList.addPeer('firstPeer', {})
@@ -128,7 +153,7 @@ describe('webrtc-signal-http', () => {
         })
 
         it('should support sign_in notifications', (done) => {
-            const app = appCreator(false)
+            const app = appCreator(false, false)
 
             // simulate adding two peers
             const firstPeerId = app.peerList.addPeer('firstPeer', {})
@@ -152,7 +177,7 @@ describe('webrtc-signal-http', () => {
         })
 
         it('should support sign_out notifications', (done) => {
-            const app = appCreator(false)
+            const app = appCreator(false, false)
 
             // simulate adding two peers
             const firstPeerId = app.peerList.addPeer('firstPeer', {})
@@ -175,6 +200,8 @@ describe('webrtc-signal-http', () => {
                 })
             ]).then(() => { /* on success, empty the chainable promise result */ }).then(done, done)
         })
+
+        
     })
 
     describe('PeerList', () => {
