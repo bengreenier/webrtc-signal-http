@@ -274,6 +274,20 @@ describe('webrtc-signal-http', () => {
 
             assert.equal(instance.format(), 'test2,2,0\ntest,1,0\n')
         })
+
+        it('should support formatting via dataFor() method', () => {
+            const instance = new PeerList()
+
+            instance.addPeer('test', { obj: true })
+
+            assert.equal(instance.dataFor('test'), 'test,1,0\n')
+
+            instance.addPeer('test2', { obj: true })
+
+            assert.equal(instance.dataFor('test2'), 'test2,2,0\ntest,1,0\n')
+        })
+
+
     })
 
     describe('Peer', () => {
