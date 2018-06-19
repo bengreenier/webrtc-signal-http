@@ -3,6 +3,7 @@ const request = require('supertest')
 const express = require('express')
 const signalRouter = require('../lib')
 const PeerList = require('../lib/peer-list')
+const datasource = require('../lib/datasource')
 const Peer = require('../lib/peer')
 
 const appCreator = (enableLogging, enableCors) => {
@@ -331,6 +332,133 @@ describe('webrtc-signal-http', () => {
             }
 
             assert.ok(instance.status() === true)
+        })
+    })
+
+    describe('Datasource', () => {
+        beforeEach(() => {
+            // reset all the dictWares
+            ['peers', 'peer', 'sockets', 'socket'].forEach((dw) => {
+                // need to leave elem 0 as that's the source
+                datasource[dw].fns = [datasource[dw].fns[0]]
+            })
+
+            datasource.setRawModel({
+                peers: {},
+                sockets: {}
+            })
+        })
+
+        it('should expose dictWare', () => {
+            // expect the public api space to be dictWare
+            ['peers', 'peer', 'sockets', 'socket'].forEach((dw) => {
+                assert.ok(datasource[dw].set)
+                assert.ok(datasource[dw].erase)
+                assert.ok(datasource[dw].use)
+                assert.ok(datasource[dw].run)
+
+                // private
+                assert.ok(datasource[dw].fns)
+            })
+            
+        })
+
+        it('should support peers pipeline', (done) => {
+            datasource.peers.set(1, {data: "chunk"})
+            datasource.peers.run(null, (peers) => {
+                assert.deepStrictEqual(peers, {
+                    1: {
+                        data: "chunk"
+                    }
+                })
+                done()
+            })
+        })
+
+        it('should support filtering', (done) => {
+            // faster to just populate data this way
+            datasource.setRawModel({
+                peers: {
+                    1: {
+                        data: "my data"
+                    },
+                    2: {
+                        data: "your data"
+                    },
+                    3: {
+                        data: "kittehns!!@?@!!!"
+                    }
+                },
+                sockets: {}
+            })
+
+            datasource.peers.use((peers, next) => {
+                // filter to contains data
+                // const filtered = {}
+                // for (var k in peers) {
+                //     if (k.indexOf('data') > -1) {
+                //         filtered[k] = peers[k]
+                //     }
+                // }
+                // next(filtered)
+                next({})
+            })
+
+            datasource.peers.run(null, (peers) => {
+                assert.deepStrictEqual(peers, {
+                    1: {
+                        data: "my data"
+                    },
+                    2: {
+                        data: "your data"
+                    }
+                })
+                done()
+            })
+        })
+
+        it('should support many peer pipelines', (done) => {
+            datasource.peers.set(1, {data: "chunk"})
+            datasource.peers.set(2, {data: "chunk2"})
+
+            new Promise((resolve, reject) => {
+                
+                datasource.peer.run(1, (peer) => {
+                    assert.deepStrictEqual(peer, {
+                        data: "chunk"
+                    })
+                    resolve()
+                })
+            }).then(() => {
+                datasource.peer.run(2, (peer) => {
+                    assert.deepStrictEqual(peer, {
+                        data: "chunk2"
+                    })
+                    done()
+                })
+            })
+        })
+
+        it('should support modifying peer pipelines', (done) => {
+            datasource.peers.set(1, {data: "chunk"})
+
+            new Promise((resolve, reject) => {
+                
+                datasource.peer.run(1, (peer) => {
+                    assert.deepStrictEqual(peer, {
+                        data: "chunk"
+                    })
+                    resolve()
+                })
+            }).then(() => {
+                datasource.peer.set(1, "data", "changed-chunk")
+                datasource.peer.run(1, (peer) => {
+                    assert.deepStrictEqual(peer, {
+                        data: "changed-chunk"
+                    })
+                    done()
+                })
+            })
         })
     })
 })
