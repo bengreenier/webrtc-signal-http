@@ -233,6 +233,75 @@ describe('webrtc-signal-http', () => {
             assert.equal(Object.keys(internalMap), 0)
         })
 
+        it('should emit addPeer:pre events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('addPeer:pre', (name) => {
+                assert.ok(typeof name === 'string')
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+        })
+
+        it('should emit addPeer events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('addPeer', (peer) => {
+                assert.ok(peer instanceof Peer)
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+        })
+
+        it('should emit addPeer:post events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('addPeer:post', (peer) => {
+                assert.ok(peer instanceof Peer)
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+        })
+
+        it('should emit removePeer:pre events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('removePeer:pre', (id) => {
+                assert.ok(typeof id === 'number')
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+            instance.removePeer(id)
+        })
+
+        it('should emit removePeer events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('removePeer', (peer) => {
+                assert.ok(peer instanceof Peer)
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+            instance.removePeer(id)
+        })
+
+        it('should emit removePeer:post events', (done) => {
+            const instance = new PeerList()
+
+            instance.once('removePeer:post', (peer) => {
+                assert.ok(peer instanceof Peer)
+                done()
+            })
+
+            const id = instance.addPeer('test', {obj: true})
+            instance.removePeer(id)
+        })
+
         it('should support socket replacement', () => {
             const expectedSocket = {obj: true}
             const expectedSocket2 = {obj: false}
