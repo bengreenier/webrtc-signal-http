@@ -1,4 +1,7 @@
 language: node_js
 node_js:
-  - "node"
-  - "lts/*"
+- node
+- lts/*
+env:
+  global:
+    secure: gGJRLIspen6jihA9A+IHEt2xRMbCFbwhzOP/iINcKN9Vc/7ld0O7uHs3ZcCWcJHseJojfOqcSR92nPkvXfXABhd9N8jyqS5sTQf1qHixUJz1MvwGxMkXtQ6kntWg9jxpOHDW85ed5aIIgG44fEdaSxW338rmH2oXwIYP5qjwL0uwSypYXtbPA0bpqHZJkD3fs0Aqz1M7paNN2GRxji528uJ/nt2Q9TFtTXVyp1DPaQAn8rYlk0XJK72UJkKPjjBR0CqF+SjJIOX8rEPBQFFEtdO5D1kKvpTBqWP/6s8oNR71DNwu3gF+5p9pSkrlV0UXFI6in51iMCXbXp4Z47+Dk/XtawlNX+QpRSKDZowzRi7oYQuZ7OYwJtu7Sr9SY7ii8M3dQrxghUITNBam5XeAhTArXNodpD0kD9JDPVvSYaDg/SarhBWyT86J66AKFAeTeFJXO4a8inl1JP+sILKRephBihqyFN2fngNbdWYPgcToWwqMT4DMcvf2UsadzLGDOIA6kAEH/eeHsRG9wIqXzhNG3zZ4TupHfz/OLn9MYp2ksl0FkoqnwUkvfxETqWxCIyhE/Ty+iU9oZ0ZjVKzQaRKEZ9n6rkBa8Ns23T0ApE4pdsC2Kw0oNVentYvrirH4z+dnLHT/l5zt2KG8dNc3/tlQ7L28GEAasfN9FP+srRw=
