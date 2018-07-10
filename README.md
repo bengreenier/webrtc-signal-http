@@ -152,6 +152,35 @@ For example extensions, see the following:
 
 [Class] - Represents a collection of WebRTC peers on which signaling operations are possible.
 
+#### events
+
+These events will be emitted from the instance, and can be caught with `on`, `once`, `off`, etc. For more information, see [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter).
+
+##### addPeer:pre
+
+Fired just before a peer is added, with the argument `name` - it indicates the peer name.
+
+##### addPeer
+
+Fired when a peer is being added, with the argument `peer` - it is the fully formed peer object.
+
+##### addPeer:post
+
+Fired after a peer is added, with the argument `peer` - it is the fully formed peer object that has been inserted into the peer list.
+
+
+##### removePeer:pre
+
+Fired just before a peer is removed, with the argument `id` - it indicates the peer id.
+
+##### removePeer
+
+Fired when a peer is being removed, with the argument `peer` - it is the fully formed peer object.
+
+##### removePeer:post
+
+Fired after a peer is removed, with the argument `peer` - it is the fully formed peer object that has been removed from the peer list.
+
 #### addPeer
 
 [Function] - takes `name` (a string), and `res` (a http.Response object). Creates a representation of the peer for signaling. __Returns__ a `Number` that shall be used as a unique id for the peer.
