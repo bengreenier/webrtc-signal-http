@@ -183,7 +183,7 @@ Fired after a peer is removed, with the argument `peer` - it is the fully formed
 
 #### addPeer
 
-[Function] - takes `name` (a string), and `res` (a http.Response object). Creates a representation of the peer for signaling. __Returns__ a `Number` that shall be used as a unique id for the peer.
+[Function] - takes `name` (a string), `res` (a http.Response object), and `req` (a http.Request object). Creates a representation of the peer for signaling. __Returns__ a `Number` that shall be used as a unique id for the peer.
 
 #### removePeer
 
@@ -199,7 +199,7 @@ Fired after a peer is removed, with the argument `peer` - it is the fully formed
 
 #### setPeerSocket
 
-[Function] - takes `id` (a Number), and `res` (a http.Response object). Updates a representation of the peer with a new response object for signaling. __Returns__ nothing.
+[Function] - takes `id` (a Number), `res` (a http.Response object), and `res` (a http.Request object). Updates a representation of the peer with a new response object for signaling. __Returns__ nothing.
 
 #### pushPeerData
 

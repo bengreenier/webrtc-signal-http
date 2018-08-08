@@ -90,8 +90,8 @@ describe('webrtc-signal-http', () => {
         it('should support /message posting (buffered)', (done) => {
             const app = appCreator(false, false)
 
-            const senderPeerId = app.peerList.addPeer('sendPeer', {})
-            const receiverPeerId = app.peerList.addPeer('receivePeer', {})
+            const senderPeerId = app.peerList.addPeer('sendPeer', {}, {})
+            const receiverPeerId = app.peerList.addPeer('receivePeer', {}, {})
 
             const test = request(app)
             
@@ -111,8 +111,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false, false)
 
             // simulate adding two peers
-            const senderPeerId = app.peerList.addPeer('sendPeer', {})
-            const receiverPeerId = app.peerList.addPeer('receivePeer', {})
+            const senderPeerId = app.peerList.addPeer('sendPeer', {}, {})
+            const receiverPeerId = app.peerList.addPeer('receivePeer', {}, {})
 
             const test = request(app)
             
@@ -138,8 +138,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false, false)
 
              // simulate adding two peers
-             const firstPeerId = app.peerList.addPeer('firstPeer', {})
-             const secondPeerId = app.peerList.addPeer('secondPeer', {})
+             const firstPeerId = app.peerList.addPeer('firstPeer', {}, {})
+             const secondPeerId = app.peerList.addPeer('secondPeer', {}, {})
  
              const test = request(app)
 
@@ -156,7 +156,7 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false, false)
 
             // simulate adding two peers
-            const firstPeerId = app.peerList.addPeer('firstPeer', {})
+            const firstPeerId = app.peerList.addPeer('firstPeer', {}, {})
             
             const test = request(app)
             
@@ -180,8 +180,8 @@ describe('webrtc-signal-http', () => {
             const app = appCreator(false, false)
 
             // simulate adding two peers
-            const firstPeerId = app.peerList.addPeer('firstPeer', {})
-            const secondPeerId = app.peerList.addPeer('secondPeer', {})
+            const firstPeerId = app.peerList.addPeer('firstPeer', {}, {})
+            const secondPeerId = app.peerList.addPeer('secondPeer', {}, {})
             
             const test = request(app)
             
@@ -208,7 +208,7 @@ describe('webrtc-signal-http', () => {
         it('should support adding peers', () => {
             const instance = new PeerList()
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
             const peer = instance.getPeer(id)
 
             const internalMap = instance._peers
@@ -224,7 +224,7 @@ describe('webrtc-signal-http', () => {
         it('should support removing peers', () => {
             const instance = new PeerList()
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
             
             instance.removePeer(id)
             
@@ -241,7 +241,7 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
         })
 
         it('should emit addPeer events', (done) => {
@@ -252,7 +252,7 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
         })
 
         it('should emit addPeer:post events', (done) => {
@@ -263,7 +263,7 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
         })
 
         it('should emit removePeer:pre events', (done) => {
@@ -274,7 +274,7 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
             instance.removePeer(id)
         })
 
@@ -286,7 +286,7 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
             instance.removePeer(id)
         })
 
@@ -298,21 +298,23 @@ describe('webrtc-signal-http', () => {
                 done()
             })
 
-            const id = instance.addPeer('test', {obj: true})
+            const id = instance.addPeer('test', {obj: true}, {})
             instance.removePeer(id)
         })
 
         it('should support socket replacement', () => {
             const expectedSocket = {obj: true}
             const expectedSocket2 = {obj: false}
+            const expectedIp = '127.0.0.1'
             const instance = new PeerList()
 
-            const id = instance.addPeer('test', expectedSocket)
+            const id = instance.addPeer('test', expectedSocket, {ip: expectedIp})
             const peer = instance.getPeer(id)
 
             assert.equal(peer.res, expectedSocket)
+            assert.equal(peer.ip, expectedIp)
 
-            instance.setPeerSocket(id, expectedSocket2)
+            instance.setPeerSocket(id, expectedSocket2, {})
 
             assert.equal(peer.res, expectedSocket2)            
         })
@@ -322,7 +324,7 @@ describe('webrtc-signal-http', () => {
             const expectedDataSrcId = 2
             const instance = new PeerList()
 
-            const id = instance.addPeer('test', {})
+            const id = instance.addPeer('test', {}, {})
 
             assert.equal(instance.popPeerData(id), null)
 
@@ -335,11 +337,11 @@ describe('webrtc-signal-http', () => {
         it('should support formatting', () => {
             const instance = new PeerList()
 
-            instance.addPeer('test', {obj: true})
+            instance.addPeer('test', {obj: true}, {})
 
             assert.equal(instance.format(), 'test,1,0\n')
 
-            instance.addPeer('test2', {obj: true})
+            instance.addPeer('test2', {obj: true}, {})
 
             assert.equal(instance.format(), 'test2,2,0\ntest,1,0\n')
         })
@@ -347,11 +349,11 @@ describe('webrtc-signal-http', () => {
         it('should support formatting via dataFor() method', () => {
             const instance = new PeerList()
 
-            instance.addPeer('test', { obj: true })
+            instance.addPeer('test', { obj: true }, {})
 
             assert.equal(instance.dataFor('test'), 'test,1,0\n')
 
-            instance.addPeer('test2', { obj: true })
+            instance.addPeer('test2', { obj: true }, {})
 
             assert.equal(instance.dataFor('test2'), 'test2,2,0\ntest,1,0\n')
         })
