@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const express = require('express')
-const signalRouterCreator = require('./lib')
+const signalRouterCreator = require('./lib') 
 
 const app = express()
 
