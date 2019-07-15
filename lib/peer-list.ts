@@ -1,21 +1,26 @@
-const Emitter = require('events').EventEmitter
-const Peer = require('./peer')
+import { EventEmitter } from "events";
+import { Peer } from "./peer";
+import { Response, Request } from "express";
 
-module.exports = class PeerList extends Emitter {
+export class PeerList extends EventEmitter {
+    private _peers: Peer[]
+    private _nextPeerId: number
+
+
     constructor() {
         super()
 
-        this._peers = {}
+        this._peers = []
         this._nextPeerId = 1
     }
 
-    addPeer(name, res, req) {
+    addPeer(name: string, res: Response, req: Request) {
         this.emit('addPeer:pre', name)
 
         const peer = new Peer(name, this._nextPeerId)
 
         peer.res = res
-        peer.ip = req.realIp || req.ip
+        peer.ip = /*req.realIp ||*/ req.ip
 
         this.emit('addPeer', peer)
         this._peers[peer.id] = peer
@@ -26,7 +31,7 @@ module.exports = class PeerList extends Emitter {
         return peer.id
     }
 
-    removePeer(id) {
+    removePeer(id: number) {
         this.emit('removePeer:pre', id)
         
         if (this._peers[id]) {
@@ -39,7 +44,7 @@ module.exports = class PeerList extends Emitter {
 
     }
 
-    getPeer(id) {
+    getPeer(id: number) {
         return this._peers[id]
     }
 
@@ -47,14 +52,14 @@ module.exports = class PeerList extends Emitter {
         return Object.keys(this._peers)
     }
 
-    setPeerSocket(id, res, req) {
+    setPeerSocket(id: number, res: Response, req: Request) {
         if (this._peers[id]) {
             this._peers[id].res = res
-            this._peers[id].ip = req.realIp || req.ip
+            this._peers[id].ip = /*req.realIp || */ req.ip
         }
     }
-
-    pushPeerData(srcId, destId, data) {
+    // TODO: look for what Data means
+    pushPeerData(srcId: number, destId: number, data: any) {
         if (this._peers[destId] && !this._peers[destId].status()) {
             this._peers[destId].buffer.push({
                 srcId: srcId,
@@ -63,7 +68,7 @@ module.exports = class PeerList extends Emitter {
         }
     }
 
-    popPeerData(id) {
+    popPeerData(id: number) {
         if (this._peers[id] && this._peers[id].buffer.length > 0) {
             return this._peers[id].buffer.pop()
         }
@@ -75,13 +80,13 @@ module.exports = class PeerList extends Emitter {
         // want that peer to appear first in the list
         return Object.keys(this._peers)
             .reverse()
-            .map(key => {
-                let e = this._peers[key]
+            .map((key) => {
+                let e = this._peers[parseInt(key)]
                 return `${e.name},${e.id},${e.status() ? 1 : 0}`
             }).join('\n') + '\n'
     }
 
-    dataFor(id) {
+    dataFor(id: number) {
         //returns the data that should appear for a given ID
         //This is the primary part of peer-list that is extensible
         return this.format()

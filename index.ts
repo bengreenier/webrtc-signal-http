@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+console.log("starting app")
 const express = require('express')
 const signalRouterCreator = require('./lib') 
 

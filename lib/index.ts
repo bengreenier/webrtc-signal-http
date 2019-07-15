@@ -1,20 +1,30 @@
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const expressBunyan = require('express-bunyan-logger')
-const PeerList = require('./peer-list')
+import * as cors from "cors"
+import * as expressBunyan  from "express-bunyan-logger"
+import { PeerList } from "./peer-list"
+import * as express from "express"
+import * as bodyParser from "body-parser"
 
+export interface IRouter extends express.Router {
+    peerList?: any;
+} 
 
-module.exports = (opts) => {
-    const router = express.Router()
+export interface IRouterOpts {
+    peerList: PeerList,
+    enableLogging: boolean,
+    enableCors: boolean
+}
 
+module.exports = (opts: IRouterOpts) => {
+    const router: IRouter = express.Router()
+    
+    
+    router as IRouter
     if (opts.peerList && !(opts.peerList instanceof PeerList)) {
         throw new Error('Invalid peerList')
     }
 
     // store the peer list on the router
-    router.peerList = opts.peerList || new PeerList()
-
+    router.peerList = opts.peerList || new PeerList() 
     // only use logging if configured to do so
     if (opts.enableLogging) {
         router.use(expressBunyan())
@@ -28,7 +38,9 @@ module.exports = (opts) => {
     // abstracted peer message sender logic
     // this will direct send if possible, otherwise
     // it will buffer into the peerList
-    const sendPeerMessage = (srcId, destId, data) => {
+
+    // TODO dig into data
+    const sendPeerMessage = (srcId: number, destId: number, data: any) => {
         // find the current peer
         const peer = router.peerList.getPeer(destId)
 
@@ -59,7 +71,7 @@ module.exports = (opts) => {
             .send(router.peerList.dataFor(peerId))
 
         // send an updated peer list to all peers
-        router.peerList.getPeerIds().filter(id => id != peerId).forEach((id) => {
+        router.peerList.getPeerIds().filter( (id: number) => id != peerId).forEach((id: number) => {
             // updated peer lists must always appear to come from
             // "ourselves", namely the srcId == destId
             sendPeerMessage(id, id, router.peerList.dataFor(id))
@@ -123,7 +135,7 @@ module.exports = (opts) => {
         router.peerList.removePeer(req.query.peer_id)
 
         // send an updated peer list to all peers
-        router.peerList.getPeerIds().forEach((id) => {
+        router.peerList.getPeerIds().forEach((id: number) => {
             // updated peer lists must always appear to come from
             // "ourselves", namely the srcId == destId
             sendPeerMessage(id, id, router.peerList.dataFor(id))

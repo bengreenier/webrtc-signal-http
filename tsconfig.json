@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5",
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "outDir": "dist",
+      "baseUrl": ".",
+      "paths": {
+        "*": ["node_modules/*"]
+      },
+      "resolveJsonModule": true
+    },
+    "include": [
+      "lib/**/*",
+      "index.ts"
+    ],
+    "exclude": [
+      "test/**/*"
+    ]
+  }
