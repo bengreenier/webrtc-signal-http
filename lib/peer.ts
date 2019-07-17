@@ -1,12 +1,5 @@
 import { Response } from "express";
-interface IBuffer {
-    data: any;
-    srcId: number;
-}
-
-interface IPeerResponse extends Response {
-    socket?: {writable: boolean};
-}
+import { IBuffer, IPeerResponse } from "./modules"; 
 
 export class Peer {
     private _name: string;

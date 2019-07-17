@@ -2,6 +2,7 @@ import * as assert from "assert";
 import * as express from "express";
 import * as request from "supertest";
 import { signalRouterCreator as signalRouter } from "../lib/index";
+import { SignalEvent } from "../lib/modules";
 import { Peer } from "../lib/peer";
 import { PeerList } from "../lib/peer-list";
 
@@ -241,10 +242,10 @@ describe("webrtc-signal-http", () => {
             assert.equal(Object.keys(internalMap), 0);
         });
 
-        it("should emit addPeer:pre events", (done) => {
+        it("should emit SignalEvent.PrePeerAdd events", (done) => {
             const instance = new PeerList();
 
-            instance.once("addPeer:pre", (name) => {
+            instance.once(SignalEvent.PrePeerAdd, (name) => {
                 assert.ok(typeof name === "string");
                 done();
             });
@@ -252,10 +253,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit addPeer events", (done) => {
+        it("should emit SignalEvent.PeerAdd events", (done) => {
             const instance = new PeerList();
 
-            instance.once("addPeer", (peer) => {
+            instance.once(SignalEvent.PeerAdd, (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -263,10 +264,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit addPeer:post events", (done) => {
+        it("should emit SignalEvent.PostPeerAdd events", (done) => {
             const instance = new PeerList();
 
-            instance.once("addPeer:post", (peer) => {
+            instance.once(SignalEvent.PostPeerAdd, (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -274,10 +275,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit removePeer:pre events", (done) => {
+        it("should emit SignalEvent.PrePeerRemove events", (done) => {
             const instance = new PeerList();
 
-            instance.once("removePeer:pre", (id) => {
+            instance.once(SignalEvent.PrePeerRemove, (id) => {
                 assert.ok(typeof id === "number");
                 done();
             });
@@ -286,10 +287,10 @@ describe("webrtc-signal-http", () => {
             instance.removePeer(id);
         });
 
-        it("should emit removePeer events", (done) => {
+        it("should emit SignalEvent.PeerRemove events", (done) => {
             const instance = new PeerList();
 
-            instance.once("removePeer", (peer) => {
+            instance.once(SignalEvent.PeerRemove, (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -298,10 +299,10 @@ describe("webrtc-signal-http", () => {
             instance.removePeer(id);
         });
 
-        it("should emit removePeer:post events", (done) => {
+        it("should emit SignalEvent.PostPeerRemove events", (done) => {
             const instance = new PeerList();
 
-            instance.once("removePeer:post", (peer) => {
+            instance.once(SignalEvent.PostPeerRemove, (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -399,7 +400,7 @@ describe("webrtc-signal-http", () => {
 
             instance.res = {
                 socket: null,
-            } as unknown as  express.Response;
+            } as unknown as express.Response;
 
             assert.ok(instance.status() === false);
 

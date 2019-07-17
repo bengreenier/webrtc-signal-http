@@ -1,20 +1,11 @@
 import { EventEmitter } from "events";
 import { Request, Response } from "express";
+import { SignalEvent } from "./modules";
 import { Peer } from "./peer";
-
-export enum SignalEvent {
-    PrePeerAdd = "addPeer:pre",
-    PeerAdd = "addPeer",
-    PostPeerAdd = "addPeer:post",
-    PrePeerRemove = "RemovePeer:pre",
-    PeerRemove = "RemovePeer",
-    PostPeerRemove = "RemovePeer:post",
-}
 
 export class PeerList extends EventEmitter {
     private _peers: Peer[];
     private _nextPeerId: number;
-
 
     constructor() {
         super();

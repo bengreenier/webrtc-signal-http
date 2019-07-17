@@ -2,20 +2,12 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as express from "express";
 import * as expressBunyan from "express-bunyan-logger";
+import { IRouter, IRouterOpts } from "./modules";
 import { PeerList } from "./peer-list";
 
-export interface IRouter extends express.Router {
-    peerList?: PeerList;
-}
-
-export interface IRouterOpts {
-    enableCors?: boolean|string;
-    enableLogging?: boolean|string;
-    peerList?: PeerList;
-}
 
 export function signalRouterCreator(opts: IRouterOpts) {
-    const router: IRouter = express.Router();
+    const router = express.Router() as IRouter;
 
     if (opts.peerList && !(opts.peerList instanceof PeerList)) {
         throw new Error("Invalid peerList");
