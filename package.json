@@ -1,5 +1,5 @@
 {
-  "name": "webrtc-signal-http",
+  "name": "webrtc-signal-http-ts",
   "version": "1.8.3",
   "description": "opinionated webrtc signal provider using http as a protocol",
   "main": "dist/lib/index.js",
@@ -8,7 +8,7 @@
     "test": "test"
   },
   "bin": {
-    "webrtc-signal-http": "./dist"
+    "webrtc-signal-http-ts": "./dist"
   },
   "files": [
     "lib/**/*",
