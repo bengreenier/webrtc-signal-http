@@ -1,5 +1,5 @@
-import { Response, Router } from "express";
-import { PeerList } from "./peer-list";
+import { Request, Response, Router } from "express";
+import PeerList from "./peer-list";
 
 export enum SignalEvent {
     PrePeerAdd = "addPeer:pre",
@@ -26,5 +26,11 @@ export interface IBuffer {
 }
 
 export interface IPeerResponse extends Response {
-    socket?: {writable: boolean};
+    socket?: { writable: boolean };
+    realIp?: string;
 }
+
+export interface IPeerRequest extends Request {
+    realIp?: string;
+}
+

@@ -1,7 +1,6 @@
-import { Response } from "express";
-import { IBuffer, IPeerResponse } from "./modules"; 
+import { IBuffer, IPeerResponse } from "./modules";
 
-export class Peer {
+export default class Peer {
     private _name: string;
     private _id: number;
     private _buffer: IBuffer[];
@@ -43,7 +42,7 @@ export class Peer {
         return this._res;
     }
 
-    set res(res: Response) {
+    set res(res: IPeerResponse) {
         this._res = res;
     }
 

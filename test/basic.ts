@@ -1,21 +1,21 @@
 import * as assert from "assert";
 import * as express from "express";
 import * as request from "supertest";
-import { signalRouterCreator as signalRouter } from "../lib/index";
-import { SignalEvent } from "../lib/modules";
-import { Peer } from "../lib/peer";
-import { PeerList } from "../lib/peer-list";
+import signalRouterCreator from "../lib/index";
+import { IPeerRequest, IPeerResponse, SignalEvent } from "../lib/modules";
+import Peer from "../lib/peer";
+import PeerList from "../lib/peer-list";
 
 interface IPeerApp extends express.Application {
     peerList?: PeerList;
 }
 
-const emptyRes = {} as express.Response;
-const trueRes = { obj: true } as unknown as express.Response;
-const emptyReq = {} as express.Request;
+const emptyRes = {} as IPeerResponse;
+const trueRes = { obj: true } as unknown as IPeerResponse;
+const emptyReq = {} as IPeerRequest;
 
 const appCreator = (enableLogging, enableCors) => {
-    const router = signalRouter({
+    const router = signalRouterCreator({
         enableCors,
         enableLogging,
     });
@@ -33,7 +33,7 @@ describe("webrtc-signal-http", () => {
     describe("creator", () => {
         it("should validate peerList", () => {
             assert.throws(() => {
-                signalRouter({
+                signalRouterCreator({
                     peerList: {} as PeerList,
                 });
             }, /peerList/);

@@ -2,11 +2,10 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as express from "express";
 import * as expressBunyan from "express-bunyan-logger";
-import { IRouter, IRouterOpts } from "./modules";
-import { PeerList } from "./peer-list";
+import { IPeerRequest, IRouter, IRouterOpts } from "./modules";
+import PeerList from "./peer-list";
 
-
-export function signalRouterCreator(opts: IRouterOpts) {
+function signalRouterCreator(opts: IRouterOpts) {
     const router = express.Router() as IRouter;
 
     if (opts.peerList && !(opts.peerList instanceof PeerList)) {
@@ -132,3 +131,10 @@ export function signalRouterCreator(opts: IRouterOpts) {
 
     return router;
 }
+
+export {
+    IPeerRequest,
+    PeerList,
+    signalRouterCreator,
+};
+

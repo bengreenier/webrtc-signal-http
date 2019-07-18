@@ -1,9 +1,8 @@
 import { EventEmitter } from "events";
-import { Request, Response } from "express";
-import { SignalEvent } from "./modules";
-import { Peer } from "./peer";
+import { IPeerRequest, IPeerResponse, SignalEvent } from "./modules";
+import Peer from "./peer";
 
-export class PeerList extends EventEmitter {
+export default class PeerList extends EventEmitter {
     private _peers: Peer[];
     private _nextPeerId: number;
 
@@ -14,13 +13,13 @@ export class PeerList extends EventEmitter {
         this._nextPeerId = 1;
     }
 
-    public addPeer(name: string, res: Response, req: Request) {
+    public addPeer(name: string, res: IPeerResponse, req: IPeerRequest) {
         this.emit(SignalEvent.PrePeerAdd, name);
 
         const peer = new Peer(name, this._nextPeerId);
 
         peer.res = res;
-        peer.ip = /*req.realIp ||*/ req.ip;
+        peer.ip = req.realIp || req.ip;
 
         this.emit(SignalEvent.PeerAdd, peer);
         this._peers[peer.id] = peer;
@@ -52,10 +51,10 @@ export class PeerList extends EventEmitter {
         return Object.keys(this._peers).map(Number);
     }
 
-    public setPeerSocket(id: number, res: Response, req: Request) {
+    public setPeerSocket(id: number, res: IPeerResponse, req: IPeerRequest) {
         if (this._peers[id]) {
             this._peers[id].res = res;
-            this._peers[id].ip = /*req.realIp || */ req.ip;
+            this._peers[id].ip = req.realIp || req.ip;
         }
     }
     // TODO: look for what Data means
@@ -75,7 +74,7 @@ export class PeerList extends EventEmitter {
     }
 
     get peers() {
-        return this._peers
+        return this._peers;
     }
 
     public format() {

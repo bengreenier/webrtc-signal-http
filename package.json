@@ -1,23 +1,17 @@
 {
   "name": "webrtc-signal-http-ts",
-  "version": "1.8.3",
+  "version": "1.8.19",
   "description": "opinionated webrtc signal provider using http as a protocol",
   "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "files": ["dist/**/*"],
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "bin": {
-    "webrtc-signal-http-ts": "./dist"
+    "webrtc-signal-http-ts": "./dist/index.js"
   },
-  "files": [
-    "lib/**/*",
-    "package-lock.json",
-    "index.ts",
-    "tsconfig.json",
-    "LICENSE",
-    "dist/**/*"
-  ],
   "scripts": {
     "test": "ts-mocha test/**/*.ts",
     "prepare": "npm run build",
@@ -25,7 +19,6 @@
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "start": "node dist/index.js"
   },
-  "types": "index.d.ts",
   "keywords": [
     "webrtc",
     "signal"
