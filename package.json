@@ -4,7 +4,9 @@
   "description": "opinionated webrtc signal provider using http as a protocol",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "directories": {
     "lib": "lib",
     "test": "test"

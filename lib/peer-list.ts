@@ -57,7 +57,7 @@ export default class PeerList extends EventEmitter {
             this._peers[id].ip = req.realIp || req.ip;
         }
     }
-    // TODO: look for what Data means
+
     public pushPeerData(srcId: number, destId: number, data: any) {
         if (this._peers[destId] && !this._peers[destId].status()) {
             this._peers[destId].buffer.push({
