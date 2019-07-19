@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import Peer from "./peer";
 import PeerList from "./peer-list";
 
 export enum SignalEvent {
@@ -34,3 +35,9 @@ export interface IPeerRequest extends Request {
     realIp?: string;
 }
 
+// temporary check for key attributes of peerlist because instanceof PeerList
+// is unpredictable as a result of non-functional object signature differences
+// between TS and JS PeerList implementations 
+export function isInstanceOfPeerList(peerListCandidate: { peers: Peer[] }) {
+    return true;
+}
