@@ -5,8 +5,6 @@ import * as expressBunyan from "express-bunyan-logger";
 import { IPeerRequest, IRouter, IRouterOpts, isInstanceOfPeerList } from "./modules";
 import PeerList from "./peer-list";
 
-
-
 function signalRouterCreator(opts: IRouterOpts) {
     const router = express.Router() as IRouter;
 
