@@ -2,7 +2,7 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as express from "express";
 import * as expressBunyan from "express-bunyan-logger";
-import { IPeerRequest, IRouter, IRouterOpts, isInstanceOfPeerList } from "./modules";
+import { IPeerRequest, IPeerResponse, IRouter, IRouterOpts, isInstanceOfPeerList } from "./modules";
 import PeerList from "./peer-list";
 
 function signalRouterCreator(opts: IRouterOpts) {
@@ -136,5 +136,6 @@ export {
     IPeerRequest,
     PeerList,
     signalRouterCreator,
+    IPeerResponse
 };
 
