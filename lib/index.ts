@@ -136,6 +136,6 @@ export {
     IPeerRequest,
     PeerList,
     signalRouterCreator,
-    IPeerResponse
+    IPeerResponse,
 };
 
