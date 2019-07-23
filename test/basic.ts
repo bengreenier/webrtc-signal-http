@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import * as express from "express";
 import * as request from "supertest";
-import signalRouterCreator from "../lib/index";
+import { signalRouterCreator } from "../lib/index";
 import { IPeerRequest, IPeerResponse, SignalEvent } from "../lib/modules";
 import Peer from "../lib/peer";
 import PeerList from "../lib/peer-list";
