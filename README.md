@@ -16,6 +16,8 @@ We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/) signalin
 
 To install the server cli `npm install -g webrtc-signal-http`. To run it, just use `webrtc-signal-http` from the command line, using the `PORT` environment variable to configure it's listening port.
 
+To run locally run `npm run build` and `npm run start`
+
 To consume this server as a basis but add some extended functionality, `npm install webrtc-signal-http` and then run some code like the following:
 
 ```

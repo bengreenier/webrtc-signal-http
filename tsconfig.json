@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "declaration": true,
+      "target": "es6",
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "outDir": "dist",
+      "baseUrl": ".",
+      "resolveJsonModule": true
+    },
+    "include": [
+      "lib/**/*",
+      "*.ts",
+    ],
+    "exclude": [
+      "test/**/*"
+    ]
+  }
