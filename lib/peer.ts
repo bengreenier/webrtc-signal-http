@@ -1,4 +1,4 @@
-import { IBuffer, IPeerResponse } from "./modules";
+import { IBuffer, IPeerResponse } from "./utils";
 
 export default class Peer {
     private _name: string;
