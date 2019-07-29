@@ -30,15 +30,6 @@ const appCreator = (enableLogging, enableCors) => {
 };
 
 describe("webrtc-signal-http", () => {
-    describe("creator", () => {
-        it("should validate peerList", () => {
-            assert.throws(() => {
-                signalRouterCreator({
-                    peerList: {} as PeerList,
-                });
-            }, /peerList/);
-        });
-    });
 
     describe("http", () => {
         it("should support sign_in", (done) => {
