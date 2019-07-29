@@ -54,7 +54,7 @@ function signalRouterCreator(opts: IRouterOpts) {
             .send(router.peerList.dataFor(peerId));
 
         // send an updated peer list to all peers
-        router.peerList.getPeerIds().filter((id: number) => id !== peerId).forEach((id: number) => {
+        router.peerList.getPeerIds().filter((id: number) => Number(id) !== peerId).forEach((id: number) => {
             // updated peer lists must always appear to come from
             // "ourselves", namely the srcId == destId
             sendPeerMessage(id, id, router.peerList.dataFor(id));
