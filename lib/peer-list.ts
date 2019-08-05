@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import Peer from "./peer";
-import { IPeerRequest, IPeerResponse, SignalEvent } from "./utils";
+import { IPeerRequest, IPeerResponse } from "./utils";
 
 export default class PeerList extends EventEmitter {
     private _peers: Peer[];
