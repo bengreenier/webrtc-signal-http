@@ -233,10 +233,10 @@ describe("webrtc-signal-http", () => {
             assert.equal(Object.keys(internalMap), 0);
         });
 
-        it("should emit SignalEvent.PrePeerAdd events", (done) => {
+        it("should emit addPeer:pre events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PrePeerAdd, (name) => {
+            instance.once("addPeer:pre", (name) => {
                 assert.ok(typeof name === "string");
                 done();
             });
@@ -244,10 +244,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit SignalEvent.PeerAdd events", (done) => {
+        it("should emit addPeer events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PeerAdd, (peer) => {
+            instance.once("addPeer", (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -255,10 +255,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit SignalEvent.PostPeerAdd events", (done) => {
+        it("should emit addPeer:post events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PostPeerAdd, (peer) => {
+            instance.once("addPeer:post", (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -266,10 +266,10 @@ describe("webrtc-signal-http", () => {
             const id = instance.addPeer("test", trueRes, emptyReq);
         });
 
-        it("should emit SignalEvent.PrePeerRemove events", (done) => {
+        it("should emit removePeer:pre events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PrePeerRemove, (id) => {
+            instance.once("removePeer:pre", (id) => {
                 assert.ok(typeof id === "number");
                 done();
             });
@@ -278,10 +278,10 @@ describe("webrtc-signal-http", () => {
             instance.removePeer(id);
         });
 
-        it("should emit SignalEvent.PeerRemove events", (done) => {
+        it("should emit removePeer events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PeerRemove, (peer) => {
+            instance.once("removePeer", (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });
@@ -290,10 +290,10 @@ describe("webrtc-signal-http", () => {
             instance.removePeer(id);
         });
 
-        it("should emit SignalEvent.PostPeerRemove events", (done) => {
+        it("should emit removePeer:post events", (done) => {
             const instance = new PeerList();
 
-            instance.once(SignalEvent.PostPeerRemove, (peer) => {
+            instance.once("removePeer:post", (peer) => {
                 assert.ok(peer instanceof Peer);
                 done();
             });

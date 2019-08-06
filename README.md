@@ -21,8 +21,8 @@ To run locally run `npm run build` and `npm run start`
 To consume this server as a basis but add some extended functionality, `npm install webrtc-signal-http` and then run some code like the following:
 
 ```
-const express = require('express')
-const signalRouterCreator = require('webrtc-signal-http')
+import * as express from "express";
+import { signalRouterCreator } from "webrtc-signal-http";
 
 const app = express()
 const router = signalRouterCreator({

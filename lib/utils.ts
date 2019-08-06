@@ -1,14 +1,6 @@
 import { Request, Response, Router } from "express";
+import Peer from "./peer";
 import PeerList from "./peer-list";
-
-export enum SignalEvent {
-    PrePeerAdd = "addPeer:pre",
-    PeerAdd = "addPeer",
-    PostPeerAdd = "addPeer:post",
-    PrePeerRemove = "RemovePeer:pre",
-    PeerRemove = "RemovePeer",
-    PostPeerRemove = "RemovePeer:post",
-}
 
 export interface IRouter extends Router {
     peerList: PeerList;
@@ -32,6 +24,15 @@ export interface IPeerResponse extends Response {
 
 export interface IPeerRequest extends Request {
     realIp?: string;
+}
+
+export interface ISignalerEvents {
+    "addPeer:pre": string;
+    "addPeer": Peer;
+    "addPeer:post": Peer;
+    "removePeer:pre": number;
+    "removePeer": Peer;
+    "removePeer:post": Peer;
 }
 
 export function optIsFalsey(opt: string | boolean) {

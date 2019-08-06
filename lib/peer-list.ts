@@ -1,8 +1,11 @@
 import { EventEmitter } from "events";
+import StrictEventEmitter from "strict-event-emitter-types";
 import Peer from "./peer";
-import { IPeerRequest, IPeerResponse, SignalEvent } from "./utils";
+import { IPeerRequest, IPeerResponse, ISignalerEvents } from "./utils";
 
-export default class PeerList extends EventEmitter {
+type StrictSignalEmitter = StrictEventEmitter<EventEmitter, ISignalerEvents>;
+
+export default class PeerList extends (EventEmitter as new() => StrictSignalEmitter) {
     private _peers: Peer[];
     private _nextPeerId: number;
 
@@ -14,31 +17,31 @@ export default class PeerList extends EventEmitter {
     }
 
     public addPeer(name: string, res: IPeerResponse, req: IPeerRequest) {
-        this.emit(SignalEvent.PrePeerAdd, name);
+        this.emit("addPeer:pre", name);
 
         const peer = new Peer(name, this._nextPeerId);
 
         peer.res = res;
         peer.ip = req.realIp || req.ip;
 
-        this.emit(SignalEvent.PeerAdd, peer);
+        this.emit("addPeer", peer);
         this._peers[peer.id] = peer;
         this._nextPeerId += 1;
 
-        this.emit(SignalEvent.PostPeerAdd, peer);
+        this.emit("addPeer:post", peer);
 
         return peer.id;
     }
 
     public removePeer(id: number) {
-        this.emit(SignalEvent.PrePeerRemove, id);
+        this.emit("removePeer:pre", id);
 
         if (this._peers[id]) {
             const cpy = this._peers[id];
-            this.emit(SignalEvent.PeerRemove, cpy);
+            this.emit("removePeer", cpy);
             delete this._peers[id];
 
-            this.emit(SignalEvent.PostPeerRemove, cpy);
+            this.emit("removePeer:post", cpy);
         }
 
     }
