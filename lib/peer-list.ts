@@ -3,9 +3,9 @@ import StrictEventEmitter from "strict-event-emitter-types";
 import Peer from "./peer";
 import { IPeerRequest, IPeerResponse, ISignalerEvents } from "./utils";
 
-type MyEmitter = StrictEventEmitter<EventEmitter, ISignalerEvents>;
+type StrictSignalEmitter = StrictEventEmitter<EventEmitter, ISignalerEvents>;
 
-export default class PeerList extends (EventEmitter as new() => MyEmitter) {
+export default class PeerList extends (EventEmitter as new() => StrictSignalEmitter) {
     private _peers: Peer[];
     private _nextPeerId: number;
 
