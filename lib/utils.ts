@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import Peer from "./peer";
 import PeerList from "./peer-list";
 
 export interface IRouter extends Router {
@@ -23,6 +24,15 @@ export interface IPeerResponse extends Response {
 
 export interface IPeerRequest extends Request {
     realIp?: string;
+}
+
+export interface ISignalerEvents {
+    "addPeer:pre": string;
+    "addPeer": Peer;
+    "addPeer:post": Peer;
+    "removePeer:pre": number;
+    "removePeer": Peer;
+    "removePeer:post": Peer;
 }
 
 export function optIsFalsey(opt: string | boolean) {
