@@ -41,7 +41,7 @@
     "@types/mocha": "^5.0.0",
     "mocha": "^5.0.0",
     "supertest": "^3.0.0",
-    "ts-mocha": "^6.0.0",
+    "ts-mocha": "^7.0.0",
     "tslint": "^5.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.4.5"
