@@ -1,5 +1,9 @@
 var spawn = require("child_process").spawn;
 
+// this is needed until Azure uses the proper npm/node versions
+// to autorun postinstall hooks. Right now, it uses a super old
+// version - so we use this shim to build using the correct version
+// from the engines package.json field.
 if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
   console.log("Detected Azure");
   console.log("Azure Path: " + process.env.PATH);
@@ -8,6 +12,7 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
   console.log("Current Exe: " + process.argv[0]);
 
   var response = spawn(process.env.NODE_EXE, ["node_modules/.bin/tsc"], {
+    cwd: "node_modules/typescript",
     stdio: "inherit"
   });
 
