@@ -16,7 +16,6 @@
   },
   "scripts": {
     "test": "ts-mocha test/**/*.ts",
-    "prepare": "npm run build",
     "build": "tsc -p .",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "node dist/index.js"
