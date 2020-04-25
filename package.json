@@ -16,7 +16,7 @@
   },
   "scripts": {
     "postinstall": "npm run --scripts-prepend-node-path=true postinstall-azure",
-    "postinstall-azure": "npm i --development && node ./scripts/azure-postinstall.js",
+    "postinstall-azure": "npm i --ignore-scripts --development && node ./scripts/azure-postinstall.js",
     "test": "ts-mocha test/**/*.ts",
     "prepare": "npm run build",
     "build": "tsc -p .",
