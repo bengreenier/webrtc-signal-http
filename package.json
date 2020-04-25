@@ -15,7 +15,7 @@
     "webrtc-signal-http": "./dist/index.js"
   },
   "scripts": {
-    "postinstall": "npm i typescript && npm run build",
+    "postinstall": "npm i typescript && npm run --scripts-prepend-node-path=true build",
     "test": "ts-mocha test/**/*.ts",
     "prepare": "npm run build",
     "build": "tsc -p .",
