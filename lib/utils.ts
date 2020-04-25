@@ -7,6 +7,7 @@ export interface IRouter extends Router {
 }
 
 export interface IRouterOpts {
+    enableStatusEndpoint?: boolean;
     enableCors?: boolean;
     enableLogging?: boolean;
     peerList?: PeerList;
@@ -18,7 +19,6 @@ export interface IBuffer {
 }
 
 export interface IPeerResponse extends Response {
-    socket?: { writable: boolean };
     realIp?: string;
 }
 
@@ -38,5 +38,14 @@ export interface ISignalerEvents {
 export function optIsFalsey(opt: string | boolean) {
     return !opt ||
         opt === "false" ||
-        ( typeof(opt) === "string" && opt.toLowerCase() === "false");
+        opt === "0" ||
+        (typeof (opt) === "string" && opt.toLowerCase() === "false");
+}
+
+export function existsOr<T>(value: T, replace: T): T {
+    if (typeof value === "undefined") {
+        return replace
+    } else {
+        return value
+    }
 }

@@ -14,9 +14,13 @@ We needed a simple to use, easy to extend [WebRTC](https://webrtc.org/) signalin
 
 > Learn about the [RESTful API](#restful-api) via the OpenAPI doc ([raw](./swagger.yml) or [hosted](https://rebilly.github.io/ReDoc/?url=https://raw.githubusercontent.com/bengreenier/webrtc-signal-http/master/swagger.yml)) to understand how clients should interact with the service.
 
-To install the server cli `npm install -g webrtc-signal-http`. To run it, just use `webrtc-signal-http` from the command line, using the `PORT` environment variable to configure it's listening port.
+To install the server cli `npm install -g webrtc-signal-http`. To run it, just use `webrtc-signal-http` from the command line. To run locally run `npm run build` and `npm run start`. The server has some modest configuration options that are controlled by [environment variables](https://en.wikipedia.org/wiki/Environment_variable):
 
-To run locally run `npm run build` and `npm run start`
+> Note: `true` enables a setting, `false` disables.
+
++ `WEBRTC_STATUS` - Enable/disable the status endpoint. Default: `true`.
++ `WEBRTC_CORS` - Enable/disable cors headers. Default: `true`.
++ `WEBRTC_SIGNAL_LOGGING` - Enable/disable logging of requests. Default: `true`.
 
 To consume this server as a basis but add some extended functionality, `npm install webrtc-signal-http` and then run some code like the following:
 
@@ -39,6 +43,26 @@ app.listen(process.env.PORT || 3000)
 
 For example clients, see the following:
 + [webrtc-native-peerconnection](https://github.com/svn2github/webrtc/tree/master/talk/examples/peerconnection/client)
+
+### GET /status
+
+> Note: This endpoint can be disabled, if the `WEBRTC_STATUS` environment variable is set to "false".
+
+The response will contain the entire peer list as a csv in the body. This can be helpful when determining the health of the service.
+
+```
+GET http://localhost:3000/status HTTP/1.1
+Host: localhost:3000
+
+=>
+
+HTTP/1.1 200 OK
+Pragma: 1
+Content-Type: text/plain; charset=utf-8
+Content-Length: 8
+
+test,1,1
+```
 
 ### GET /sign_in
 

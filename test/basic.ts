@@ -4,7 +4,7 @@ import * as request from "supertest";
 import { signalRouterCreator } from "../lib/index";
 import Peer from "../lib/peer";
 import PeerList from "../lib/peer-list";
-import { IPeerRequest, IPeerResponse, SignalEvent } from "../lib/utils";
+import { IPeerRequest, IPeerResponse, optIsFalsey } from "../lib/utils";
 
 interface IPeerApp extends express.Application {
     peerList?: PeerList;
@@ -29,6 +29,24 @@ const appCreator = (enableLogging, enableCors) => {
     return app;
 };
 
+describe("opt-is-falsy", () => {
+    it("should treat \"false\" as false", () => {
+        assert.equal(optIsFalsey("false"), true)
+    })
+
+    it("should treat \"true\" as truthy", () => {
+        assert.equal(optIsFalsey("true"), false)
+    })
+
+    it("should treat \"1\" as truthy", () => {
+        assert.equal(optIsFalsey("1"), false)
+    })
+
+    it("should treat \"0\" as falsey", () => {
+        assert.equal(optIsFalsey("0"), true)
+    })
+})
+
 describe("webrtc-signal-http", () => {
 
     describe("http", () => {
@@ -45,24 +63,24 @@ describe("webrtc-signal-http", () => {
             const expectedPeerName = "myName";
 
             request(appCreator(false, true))
-            .get("/")
-            .expect("access-control-allow-origin", "*", done);
+                .get("/")
+                .expect("access-control-allow-origin", "*", done);
         });
 
         it("should prevent CORS requests if disabled", (done) => {
             const expectedPeerName = "myName";
 
             request(appCreator(false, false))
-            .get("/")
-            .end(function(error, response) {
-                if (error) {
-                    return done(error);
-                }
+                .get("/")
+                .end(function (error, response) {
+                    if (error) {
+                        return done(error);
+                    }
 
-                const corsDisabled = response.header["access-control-allow-origin"] === undefined;
-                assert.equal(corsDisabled, true);
-                done();
-            });
+                    const corsDisabled = response.header["access-control-allow-origin"] === undefined;
+                    assert.equal(corsDisabled, true);
+                    done();
+                });
         });
 
         it("should support multiple sign_in", (done) => {
@@ -137,7 +155,7 @@ describe("webrtc-signal-http", () => {
         it("should support /sign_out", (done) => {
             const app = appCreator(false, false);
 
-             // simulate adding two peers
+            // simulate adding two peers
             const firstPeerId = app.peerList.addPeer("firstPeer", emptyRes, emptyReq);
             const secondPeerId = app.peerList.addPeer("secondPeer", emptyRes, emptyReq);
 
@@ -341,7 +359,7 @@ describe("webrtc-signal-http", () => {
 
             assert.equal(instance.format(), "test,1,0\n");
 
-            instance.addPeer("test2", trueRes,emptyReq);
+            instance.addPeer("test2", trueRes, emptyReq);
 
             assert.equal(instance.format(), "test2,2,0\ntest,1,0\n");
         });
@@ -399,7 +417,7 @@ describe("webrtc-signal-http", () => {
                 socket: {
                     writable: true,
                 },
-            } as unknown as  express.Response;
+            } as unknown as express.Response;
 
             assert.ok(instance.status() === true);
         });

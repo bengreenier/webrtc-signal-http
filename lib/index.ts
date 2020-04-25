@@ -40,7 +40,7 @@ function signalRouterCreator(opts: IRouterOpts) {
     };
 
     router.get("/sign_in", (req, res) => {
-        if (!req.query.peer_name) {
+        if (!req.query.peer_name || typeof req.query.peer_name !== "string") {
             return res.status(400).end();
         }
 
@@ -67,12 +67,17 @@ function signalRouterCreator(opts: IRouterOpts) {
         (req, res) => {
 
             if (!req.query.peer_id ||
-                !req.query.to) {
+                typeof req.query.peer_id !== "string" ||
+                !req.query.to ||
+                typeof req.query.to !== "string") {
                 return res.status(400).end();
             }
 
+            const to = Number(req.query.to).valueOf()
+            const id = Number(req.query.peer_id).valueOf()
+
             // find the current peer
-            const peer = router.peerList.getPeer(req.query.to);
+            const peer = router.peerList.getPeer(to);
 
             if (!peer) {
                 return res.status(404).end();
@@ -80,7 +85,7 @@ function signalRouterCreator(opts: IRouterOpts) {
 
             // send data to the peer
             // (this will write to the `to` socket, or buffer if needed)
-            sendPeerMessage(req.query.peer_id, req.query.to, req.body);
+            sendPeerMessage(id, to, req.body);
 
             // whether we send directly or buffer we tell the sender everything is 'OK'
             res.status(200).end();
@@ -88,11 +93,12 @@ function signalRouterCreator(opts: IRouterOpts) {
     );
 
     router.get("/wait", (req, res) => {
-        if (!req.query.peer_id) {
+        if (!req.query.peer_id || typeof req.query.peer_id !== "string") {
             return res.status(400).end();
         }
+        const id = Number(req.query.peer_id).valueOf()
 
-        const pop = router.peerList.popPeerData(req.query.peer_id);
+        const pop = router.peerList.popPeerData(id);
 
         // if we have data to send, just send it now
         if (pop) {
@@ -103,17 +109,19 @@ function signalRouterCreator(opts: IRouterOpts) {
             // set the socket for the given peer and let it hang
             // this is the critical piece that let's us send data
             // using 'push'-ish technology
-            router.peerList.setPeerSocket(req.query.peer_id, res, req);
+            router.peerList.setPeerSocket(id, res, req);
         }
     });
 
     router.get("/sign_out", (req, res) => {
-        if (!req.query.peer_id) {
+        if (!req.query.peer_id || typeof req.query.peer_id !== "string") {
             return res.status(400).end();
         }
 
+        const id = Number(req.query.peer_id).valueOf()
+
         // remove the peer
-        router.peerList.removePeer(req.query.peer_id);
+        router.peerList.removePeer(id);
 
         // send an updated peer list to all peers
         router.peerList.getPeerIds().forEach((id: number) => {
@@ -124,6 +132,12 @@ function signalRouterCreator(opts: IRouterOpts) {
 
         res.status(200).end();
     });
+
+    if (opts.enableStatusEndpoint) {
+        router.get("/status", (req, res) => {
+            res.status(200).send(router.peerList.format());
+        });
+    }
 
     return router;
 }
