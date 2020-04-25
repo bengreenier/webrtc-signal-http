@@ -17,5 +17,6 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
 
   response.on("exit", function (code) {
     console.log("Spawn code: " + code);
+    process.exit(code);
   });
 }
