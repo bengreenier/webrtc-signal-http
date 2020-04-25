@@ -88,26 +88,18 @@ goto :EOF
 :Deployment
 echo Handling node.js deployment.
 
+:: 2. Select node version
+call :SelectNodeVersion
+
+:: CUSTOM BITS
+call !NPM_CMD! install --scripts-prepend-node-path=true --no-scripts
+call !NPM_CMD! run build --scripts-prepend-node-path=true
+:: END CUSTOM BITS
+
 :: 1. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
   IF !ERRORLEVEL! NEQ 0 goto error
-)
-
-:: 2. Select node version
-call :SelectNodeVersion
-
-:: 3. Install npm packages
-IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-  pushd "%DEPLOYMENT_TARGET%"
-
-  :: CUSTOM BITS
-  call !NPM_CMD! install --scripts-prepend-node-path=true --no-scripts
-  call !NPM_CMD! run build --scripts-prepend-node-path=true
-  :: END CUSTOM BITS
-
-  IF !ERRORLEVEL! NEQ 0 goto error
-  popd
 )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
