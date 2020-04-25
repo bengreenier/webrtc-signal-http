@@ -19,6 +19,7 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
 
   response.on("error", function (err) {
     console.log("Spawn Error: " + err.message);
+    process.exit(1);
   });
 
   response.on("exit", function (code) {
