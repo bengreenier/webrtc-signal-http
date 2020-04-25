@@ -11,19 +11,38 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
   console.log("Azure Node: " + process.env.NODE_EXE);
   console.log("Current Exe: " + process.argv[0]);
 
-  // this depends on typescript/bin/tsc existing in the npm package
-  var response = spawn(process.env.NODE_EXE, ["bin/tsc", "--verbose"], {
-    cwd: "node_modules/typescript",
+  var npm = spawn(process.env.NPM_CMD, ["i", "--no-scripts"], {
     stdio: "inherit"
-  });
+  })
 
-  response.on("error", function (err) {
-    console.log("Spawn Error: " + err.message);
+  npm.on("error", function (err) {
+    console.log("Npm Spawn Error: " + err.message);
     process.exit(1);
   });
 
-  response.on("exit", function (code) {
-    console.log("Spawn code: " + code);
-    process.exit(code);
+  npm.on("exit", function (code) {
+    if (code != 0) {
+      // exit early
+      console.log("Npm Exit Code: " + code);
+      process.exit(2);
+    } else {
+      // this depends on typescript/bin/tsc existing in the npm package
+      var tsc = spawn(process.env.NODE_EXE, ["bin/tsc", "--verbose"], {
+        cwd: "node_modules/typescript",
+        stdio: "inherit"
+      });
+
+      tsc.on("error", function (err) {
+        // exit early
+        console.log("Spawn Error: " + err.message);
+        process.exit(3);
+      });
+
+      tsc.on("exit", function (code) {
+        // exit for good
+        console.log("Spawn code: " + code);
+        process.exit(code);
+      });
+    }
   });
 }
