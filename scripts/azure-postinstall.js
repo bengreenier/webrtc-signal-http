@@ -11,6 +11,7 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
   console.log("Azure Node: " + process.env.NODE_EXE);
   console.log("Current Exe: " + process.argv[0]);
 
+  // this depends on typescript/bin/tsc existing in the npm package
   var response = spawn(process.env.NODE_EXE, ["bin/tsc"], {
     cwd: "node_modules/typescript",
     stdio: "inherit"
