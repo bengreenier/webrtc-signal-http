@@ -9,7 +9,7 @@ const app = express();
 const enableStatusEndpoint = !optIsFalsey(existsOr(process.env.WEBRTC_STATUS, "true"))
 const enableCors = !optIsFalsey(existsOr(process.env.WEBRTC_CORS, "true"))
 const enableLogging = !optIsFalsey(existsOr(process.env.WEBRTC_SIGNAL_LOGGING, "true"))
-const port = Number(existsOr(process.env.PORT, "3000")).valueOf()
+const port = process.env.PORT || 3000
 
 console.log(`Service selected port: ${port}`)
 
