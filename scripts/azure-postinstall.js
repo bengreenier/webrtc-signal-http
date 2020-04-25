@@ -1,4 +1,4 @@
-var spawn = require("child_process").spawnSync;
+var spawn = require("child_process").spawn;
 
 if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
   console.log("Detected Azure");
@@ -11,9 +11,11 @@ if (typeof process.env["DEPLOYMENT_TARGET"] !== "undefined") {
     stdio: "inherit"
   });
 
-  if (response.error) {
-    console.log("Tsc Error: " + response.error);
-  }
+  response.on("error", function (err) {
+    console.log("Spawn Error: " + err.message);
+  });
 
-  console.log("Tsc status: " + response.status);
+  response.on("exit", function (code) {
+    console.log("Spawn code: " + code);
+  });
 }
