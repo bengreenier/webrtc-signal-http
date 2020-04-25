@@ -11,6 +11,8 @@ const enableCors = !optIsFalsey(existsOr(process.env.WEBRTC_CORS, "true"))
 const enableLogging = !optIsFalsey(existsOr(process.env.WEBRTC_SIGNAL_LOGGING, "true"))
 const port = Number(existsOr(process.env.PORT, "3000")).valueOf()
 
+console.log(`Service selected port: ${port}`)
+
 const srv = app.use(signalRouterCreator({
     enableStatusEndpoint,
     enableCors,
