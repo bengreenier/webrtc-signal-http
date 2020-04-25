@@ -15,8 +15,7 @@
     "webrtc-signal-http": "./dist/index.js"
   },
   "scripts": {
-    "postinstall": "npm run --scripts-prepend-node-path=true postinstall-azure",
-    "postinstall-azure": "node ./scripts/azure-postinstall.js",
+    "postinstall": "npm run build",
     "test": "ts-mocha test/**/*.ts",
     "prepare": "npm run build",
     "build": "tsc -p .",
